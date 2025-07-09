@@ -25,7 +25,9 @@ from . import errors
 
 
 def copy_text_wl(text,encode="utf-8"):
-    raise NotImplementedError("pasteli.core.copy_text_wl(text,encode='utf-8')")
+    if encode != "bytes": text = text.encode(encode)
+    # warnings.warn("pasteli.core.copy_text_wl(text,encode='utf-8') is not complete. Functionality may be missing.",errors.UnfinishedWarning)
+    subprocess.run(["wl-copy"],input=text,check=True,close_fds=True)
 
 def copy_text_x11(text,encode="utf-8"):
     if encode != "bytes": text = text.encode(encode)
@@ -40,7 +42,14 @@ def copy_text_mac(text,encode="utf-8"):
     raise NotImplementedError("pasteli.core.copy_text_mac(text,encode='utf-8')")
 
 def paste_text_wl(decode="utf-8"):
-    raise NotImplementedError("pasteli.core.paste_text_wl(decode='utf-8')")
+    try:
+        value = subprocess.run(["wl-paste"],capture_output=True,check=True,timeout=5).stdout
+        if value.endswith(b"\n"): value = value[:-1]
+        if decode != "bytes": value = value.decode(decode)
+        return value
+    except subprocess.TimeoutExpired:
+        raise TimeoutError("Xclip timed out, and the clipboard could not be pasted. (are you in an X11 session?)")
+    # raise NotImplementedError("pasteli.core.paste_text_wl(decode='utf-8')")
 
 def paste_text_x11(decode="utf-8"):
     try:
