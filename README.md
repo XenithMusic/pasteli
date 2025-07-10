@@ -14,12 +14,12 @@ Pasteli is a cross-platform python library that allows developers to easily acce
 |❌ = Not Working|
 |➖ = Not Planned|
 
-|Operating System|Windowing System|Supported|
-|----------------|----------------|---------|
-|Windows         |N/A             |✅|
-|MacOS           |N/A             |✅|
-|Linux           |X11             |✅|
-|Linux           |Wayland         |✅|
+|Operating System|Windowing System|Supported|Notes     |
+|----------------|----------------|---------|----------|
+|Windows         |N/A             |✅|Windows support may be inconsistent.|
+|MacOS           |N/A             |✅||
+|Linux           |X11             |✅||
+|Linux           |Wayland         |✅||
 |iOS             |N/A             |➖|
 |iPadOS          |N/A             |➖|
 |Android         |N/A             |➖|
@@ -29,15 +29,15 @@ Pasteli is a cross-platform python library that allows developers to easily acce
 
 ## Clipboard Support
 
-|Type     |Copy Support|Paste Support|
-|---------|------------|-------------|
-|Text             |✅|✅|
-|Text (with MIME) |❌|❌|
-|Rich Text        |❌|❌|
-|Raw Images       |❌|❌|
-|Files            |❌|❌|
-|Raw Audio        |➖|➖|
-|Raw Video        |➖|➖|
+|Type     |Copy Support|Paste Support|Notes           |
+|---------|------------|-------------|----------------|
+|Text             |✅|✅||
+|Text (with MIME) |❌|❌||
+|Rich Text        |❌|❌||
+|Raw Images       |❌|❌||
+|Files            |❌|❌||
+|Raw Audio        |➖|➖||
+|Raw Video        |➖|➖||
 
 ## Installation
 
