@@ -23,6 +23,12 @@ import platform
 import os
 from . import errors
 
+if platform.system() == "windows" or os.name == "nt":
+    # ALL OF THESE ARE ONLY FOR WINDOWS.
+    # YEAH THATS RIGHT MICROSOFT YOU'RE A SPECIAL BOY!
+    import win32clipboard as wc
+    import win32con
+    import struct
 
 def copy_text_wl(text,encode="utf-8"):
     if encode != "bytes": text = text.encode(encode)
@@ -36,7 +42,15 @@ def copy_text_x11(text,encode="utf-8"):
     # raise NotImplementedError("pasteli.core.copy_text(text)")
 
 def copy_text_windows(text,encode="utf-8"):
-    raise NotImplementedError("pasteli.core.copy_text_windows(text,encode='utf-8')")
+    if encode == "bytes": raise WindowsError("Cannot reliably convert from bytes.")
+    try:
+        if encode != "utf-16le": text = text.encode("utf-16le")
+    except UnicodeDecodeError as e:
+        raise WindowsError("Could not convert to UTF-16LE, which is necessary because windows is a special boy.")
+    wc.OpenClipboard()
+    wc.EmptyClipboard()
+    wc.SetClipboardData(win32con.CF_UNICODETEXT,text)
+    wc.CloseClipboard()
 
 def copy_text_mac(text,encode="utf-8"):
     if encode != "bytes": text = text.encode(encode)
@@ -63,7 +77,16 @@ def paste_text_x11(decode="utf-8"):
         raise TimeoutError("Xclip timed out, and the clipboard could not be pasted. (are you in an X11 session?)")
 
 def paste_text_windows(decode="utf-8"):
-    raise NotImplementedError("pasteli.core.paste_text_windows(decode='utf-8')")
+    wc.OpenClipboard()
+    try:
+        data = wc.GetClipboardData(win32con.CF_UNICODETEXT)
+    except TypeError:
+        data = None
+        warnings.warn("Clipboard doesn't contain text data.",EncodingWarning)
+    finally:
+        wc.CloseClipboard()
+    return data
+    # raise NotImplementedError("pasteli.core.paste_text_windows(decode='utf-8')")
 
 def paste_text_mac(decode="utf-8"):
     try:

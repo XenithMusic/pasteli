@@ -10,12 +10,13 @@ Pasteli is a cross-platform python library that allows developers to easily acce
 |Legend|
 |------|
 |✅ = Working|
+|❓ = Partially Working|
 |❌ = Not Working|
 |➖ = Not Planned|
 
 |Operating System|Windowing System|Supported|
 |----------------|----------------|---------|
-|Windows         |N/A             |❌ (incomplete)|
+|Windows         |N/A             |✅|
 |MacOS           |N/A             |✅|
 |Linux           |X11             |✅|
 |Linux           |Wayland         |✅|
