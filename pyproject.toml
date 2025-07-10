@@ -1,3 +1,57 @@
 [build-system]
 requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name="pasteli"
+version="0.1.0"
+authors=[
+    { name = "cookiiq", email = "xenith.contact.mail@gmail.com" }
+]
+description="A cross-platform library for handling the clipboard through python."
+readme="README.md"
+requires-python = ">=3.10"
+license="LGPL-3.0-or-later"
+license-files = ["LICENSE"]
+keywords = [
+    "clipboard",
+    "clip",
+    "pasteboard",
+    "copy",
+    "paste",
+    "pastel",
+    "pasteli"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Environment :: MacOS X",
+    "Environment :: Win32 (MS Windows)",
+    "Environment :: X11 Applications",
+    "Intended Audience :: Developers",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+dependencies = [
+    "pywin32; sys_platform == 'win32'"
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.urls]
+github = "https://github.com/XenithMusic/pasteli.git"
+issues = "https://github.com/XenithMusic/pasteli/issues"
+
+[tool.setuptools.packages]
+find = {}  # Scan the project directory with the default parameters
