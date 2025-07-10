@@ -20,6 +20,6 @@ from . import require as _require
 
 from .core import *
 from .constants import *
-from . import errors
+from . import errors,utils
 
 print(f"PasteLi {VERSION} (on {PY_IMPLEMENTATION} {PY_VERSION})")

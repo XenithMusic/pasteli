@@ -27,6 +27,7 @@ PY_VERSION = ".".join([str(x) for x in sys.version_info[:3]])
 # Copy Modes
 
 CMODE_TEXT = 1
+CMODE_FILE = 2
 
 # Display Servers (actually just used for the system that handles the clipboard)
 

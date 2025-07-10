@@ -10,16 +10,16 @@ Pasteli is a cross-platform python library that allows developers to easily acce
 |Legend|
 |------|
 |✅ = Working|
-|❓ = Partially Working|
+|☑️ = Partially Working|
 |❌ = Not Working|
 |➖ = Not Planned|
 
 |Operating System|Windowing System|Supported|Notes     |
 |----------------|----------------|---------|----------|
-|Windows         |N/A             |✅|Windows support may be inconsistent.|
-|MacOS           |N/A             |✅||
+|Windows         |N/A             |☑️|Windows support may be inconsistent.|
+|MacOS           |N/A             |☑️||
 |Linux           |X11             |✅||
-|Linux           |Wayland         |✅||
+|Linux           |Wayland         |☑️||
 |iOS             |N/A             |➖|
 |iPadOS          |N/A             |➖|
 |Android         |N/A             |➖|
@@ -35,7 +35,7 @@ Pasteli is a cross-platform python library that allows developers to easily acce
 |Text (with MIME) |❌|❌||
 |Rich Text        |❌|❌||
 |Raw Images       |❌|❌||
-|Files            |❌|❌||
+|Files            |☑️|☑️|Only implemented on X11|
 |Raw Audio        |➖|➖||
 |Raw Video        |➖|➖||
 
@@ -44,9 +44,9 @@ Pasteli is a cross-platform python library that allows developers to easily acce
 Pasteli is not currently on PyPI, however you can use Pasteli by downloading the `pasteli` folder from the source code, and importing the folder in your code as if it was a file.
 
 Pasteli depends on the following:
-- `xclip` on X11
-- `wl-clipboard` on Wayland
-- `pywin32` on Windows
+- `xclip` on X11 (`pacman -S xclip` or whatever your distro's equivalent is)
+- `wl-clipboard` on Wayland (`pacman -S wl-clipboard` or whatever your distro's equivalent is)
+- `pywin32` on Windows (`pip install pywin32`)
 
 When it is eventually on PyPI, it will be able to be installed as follows:
 
