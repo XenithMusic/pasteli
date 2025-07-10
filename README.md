@@ -46,6 +46,7 @@ Pasteli is not currently on PyPI, however you can use Pasteli by downloading the
 Pasteli depends on the following:
 - `xclip` on X11
 - `wl-clipboard` on Wayland
+- `pywin32` on Windows
 
 When it is eventually on PyPI, it will be able to be installed as follows:
 
