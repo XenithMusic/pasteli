@@ -39,7 +39,9 @@ def copy_text_windows(text,encode="utf-8"):
     raise NotImplementedError("pasteli.core.copy_text_windows(text,encode='utf-8')")
 
 def copy_text_mac(text,encode="utf-8"):
-    raise NotImplementedError("pasteli.core.copy_text_mac(text,encode='utf-8')")
+    if encode != "bytes": text = text.encode(encode)
+    subprocess.run(["pbcopy"],input=text,check=True,close_fds=True)
+    # raise NotImplementedError("pasteli.core.copy_text_mac(text,encode='utf-8')")
 
 def paste_text_wl(decode="utf-8"):
     try:
@@ -64,7 +66,14 @@ def paste_text_windows(decode="utf-8"):
     raise NotImplementedError("pasteli.core.paste_text_windows(decode='utf-8')")
 
 def paste_text_mac(decode="utf-8"):
-    raise NotImplementedError("pasteli.core.paste_text_mac(decode='utf-8')")
+    try:
+        value = subprocess.run(["pbpaste"],capture_output=True,check=True,timeout=5).stdout
+        if value.endswith(b"\n"): value = value[:-1]
+        if decode != "bytes": value = value.decode(decode)
+        return value
+    except subprocess.TimeoutExpired:
+        raise TimeoutError("Xclip timed out, and the clipboard could not be pasted. (are you in an X11 session?)")
+    # raise NotImplementedError("pasteli.core.paste_text_wl(decode='utf-8')")
 
 def get_display_server() -> int:
     if os.environ.get("WAYLAND_DISPLAY"):
