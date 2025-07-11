@@ -91,17 +91,20 @@ def copy_text_mac(text,encode="utf-8"):
     subprocess.run(["pbcopy"],input=text,check=True,close_fds=True)
     # raise NotImplementedError("pasteli.core.copy_text_mac(text,encode='utf-8')")
 
-def copy_file_wl(file,encode="utf-8"):
+def copy_file_wl(files:list[Union[str,bytes]],encode="utf-8"):
     """
     Copies a file to the clipboard, on Linux (Wayland).
 
     Args:
-        file (str|bytes): The file path to copy
+        files (list[str|bytes]): The file path to copy
         encode (str): The encoding that's being passed.
     """
-    raise NotImplementedError("pasteli.core.copy_file_wl(file,encode='utf-8')")
+    uris = [f"file://{os.path.abspath(file)}" for file in files if len(file) != 0]
+    if encode != "bytes": uris = [uri.encode(encode) for uri in uris]
+    uris = b"\n".join(uris)
+    subprocess.run(["wl-copy","-t","text/uri-list"],input=uris,check=True,close_fds=True)
 
-def copy_file_x11(files,encode="utf-8") -> None:
+def copy_file_x11(files:list[Union[str,bytes]],encode="utf-8") -> None:
     """
     Copies a file to the clipboard, on Linux (X11).
 
@@ -116,22 +119,22 @@ def copy_file_x11(files,encode="utf-8") -> None:
     # '-t', 'text/uri-list'
     # raise NotImplementedError("pasteli.core.copy_file_x11(file,encode='utf-8')")
 
-def copy_file_windows(file,encode="utf-8"):
+def copy_file_windows(files:list[Union[str,bytes]],encode="utf-8"):
     """
     Copies a file to the clipboard, on Windows.
 
     Args:
-        file (str|bytes): The file path to copy
+        files (list[str|bytes]): The file path to copy
         encode (str): The encoding that's being passed.
     """
     raise NotImplementedError("pasteli.core.copy_file_windows(file,encode='utf-8')")
 
-def copy_file_mac(file,encode="utf-8"):
+def copy_file_mac(files:list[Union[str,bytes]],encode="utf-8"):
     """
     Copies a file to the pasteboard, on MacOS.
 
     Args:
-        file (str|bytes): The file path to copy
+        files (list[str|bytes]): The file path to copy
         encode (str): The encoding that's being passed.
     """
     raise NotImplementedError("pasteli.core.copy_file_mac(file,encode='utf-8')")
@@ -235,7 +238,27 @@ def paste_file_wl(decode="utf-8"):
     Returns:
         str|bytes: A list of file paths from the clipboard, in the format of the encoding.
     """
-    raise NotImplementedError("pasteli.core.paste_file_wl(decode='utf-8')")
+    try:
+        # warnings.warn("pasteli.core.paste_text_x11(decode='utf-8') is not complete. Functionality may be missing.",errors.UnfinishedWarning)
+        raw = subprocess.run(["wl-paste","-t","text/uri-list"],capture_output=True,check=True,timeout=5).stdout
+        uris = [x for x in raw.split(b"\r\n") if x != b"" and x != b"\n"]
+        value = []
+        for uri in uris:
+            parsed = uri.split(b"://")
+            scheme = parsed[0]
+            print(scheme)
+            if scheme != b"file":
+                warnings.warn(f"Not a file URL. ({uri} from {uris}) Is the clipboard data a file or a list of files?",EncodingWarning)
+                return []
+            path = b"://".join(parsed[1:])
+            value.append(unquote_to_bytes(path))
+        if decode != "bytes": value = [x.decode(decode) for x in value]
+        return value
+    except subprocess.TimeoutExpired:
+        raise TimeoutError("wl-paste timed out, and the clipboard could not be pasted. (are you in an Wayland session?)")
+    except subprocess.CalledProcessError as e:
+        if e.returncode == 1:
+            warnings.warn("wl-paste returned exist status 1. Is the clipboard data a file or a list of files?",errors.ClipboardUtilityWarning)
 
 def paste_file_x11(decode="utf-8"):
     """
@@ -301,12 +324,12 @@ def copy_text(text,encoding="utf-8"):
         case _:
             raise KeyError("pasteli.utils.get_display_server() returned unexpected value.")
 
-def copy_file(file,encoding="utf-8"):
+def copy_file(files,encoding="utf-8"):
     """
     Calls the individual copying function for the active display server.
 
     Args:
-        file (str or bytes): The file path to copy
+        files (list[str|bytes]): The file path to copy
         encoding (str): The encoding of the value you're passing
     
     Raises:
@@ -317,16 +340,17 @@ def copy_file(file,encoding="utf-8"):
     Returns:
         None
     """
+    if type(file) == str: raise TypeError("Expected str on argument `files`")
     ds = get_display_server()
     match ds:
         case const.DS_WAYLAND:
-            return copy_file_wl(file,encode=encoding)
+            return copy_file_wl(files,encode=encoding)
         case const.DS_X11:
-            return copy_file_x11(file,encode=encoding)
+            return copy_file_x11(files,encode=encoding)
         case const.DS_WINDOWS:
-            return copy_file_windows(file,encode=encoding)
+            return copy_file_windows(files,encode=encoding)
         case const.DS_WINDOWSERVER:
-            return copy_file_mac(file,encode=encoding)
+            return copy_file_mac(files,encode=encoding)
         case _:
             raise KeyError("pasteli.utils.get_display_server() returned unexpected value.")
 
@@ -393,12 +417,12 @@ def paste_file(encoding="utf-8") -> Union[str,bytes]:
 def copy(mode:int,text:Optional[Union[str,bytes]]=None,file:Optional[Union[str,bytes]]=None,encoding:str="utf-8") -> None:
     """
     Calls the individual copying function for the type (`mode`) of medium supplied.
-    Pass one of (text, file)
+    Pass one of (text, file)didnt 
 
     Args:
         mode (int): What type of medium? Use `pasteli.constants.CMODE_*` values.
-        text (str or bytes): The data to copy (works for all modes)
-        file (str or bytes, optional): The file path to copy (works for CMODE_FILE)
+        text (str|bytes|list[str|bytes]): The data to copy (works for all modes)
+        file (list[str|bytes], optional): The file path to copy (works for CMODE_FILE)
         encoding (str): The encoding of the value you're passing (works for CMODE_TEXT, CMODE_FILE)
     
     Raises:

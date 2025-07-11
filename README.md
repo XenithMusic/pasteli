@@ -19,7 +19,7 @@ Pasteli is a cross-platform python library that allows developers to easily acce
 |Windows         |N/A             |☑️|Windows support may be inconsistent.|
 |MacOS           |N/A             |☑️||
 |Linux           |X11             |✅||
-|Linux           |Wayland         |☑️||
+|Linux           |Wayland         |✅||
 |iOS             |N/A             |➖|
 |iPadOS          |N/A             |➖|
 |Android         |N/A             |➖|
@@ -35,7 +35,7 @@ Pasteli is a cross-platform python library that allows developers to easily acce
 |Text (with MIME) |❌|❌||
 |Rich Text        |❌|❌||
 |Raw Images       |❌|❌||
-|Files            |☑️|☑️|Only implemented on X11|
+|Files            |☑️|☑️|Only implemented on X11 and Wayland|
 |Raw Audio        |➖|➖||
 |Raw Video        |➖|➖||
 
